@@ -25,6 +25,8 @@ import { ZoomableMedia } from "./zoomable-media";
 import { CircleAlertIcon } from "lucide-react";
 import Link from "next/link";
 import { CodeBlockWrapper } from "./code-block-wrapper";
+import { InputTypeCard } from "./input-type-card";
+import { DocumentedImage } from "./documented-image";
 
 export const mdxComponents = {
   Accordion,
@@ -43,6 +45,8 @@ export const mdxComponents = {
   CardFooter,
   CardHeader,
   CardTitle,
+  DocumentedImage,
+  InputTypeCard,
   Callout,
   CalloutTitle,
   CalloutDescription,
@@ -135,7 +139,9 @@ export const mdxComponents = {
       <div className="shrink-0 mt-1">
         <CircleAlertIcon size={20} className="fill-blue-500 stroke-zinc-100 dark:stroke-zinc-800" />
       </div>
-      <div>{props.children}</div>
+      <div className="min-w-0 [&>p]:!mt-0 [&>p+p]:!mt-1 [&>p:first-child>strong:first-child]:block">
+        {props.children}
+      </div>
     </blockquote>
   ),
   img: ({

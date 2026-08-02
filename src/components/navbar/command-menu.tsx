@@ -92,7 +92,7 @@ export function CommandMenu({ ...props }: DialogProps) {
 
   const docsWithHeadings = docs.map(doc => ({
     title: doc.title,
-    href: `/docs/${doc.slugAsParams}`,
+    href: `/${doc.slugAsParams}`,
     description: doc.description,
     toc: doc.toc,
   }));
