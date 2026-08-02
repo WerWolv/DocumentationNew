@@ -164,7 +164,9 @@
   --duration: 0.8s;
   --delay: 0.1s;
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
-  display: inline-block;
+  display: block;
+  width: fit-content;
+  max-width: 100%;
   background: linear-gradient(hsl(var(--secondary-foreground)) 0 0)
     calc(100% - var(--p, 0%)) / 0 var(--p, 0%) no-repeat;
   transition: 
