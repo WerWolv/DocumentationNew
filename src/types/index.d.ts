@@ -13,7 +13,6 @@ export type SiteConfig = {
   }
   socials: {
     github: string;
-    x: string;
   }
 }
 
