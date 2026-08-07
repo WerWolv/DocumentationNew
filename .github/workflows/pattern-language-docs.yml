@@ -23,26 +23,60 @@ jobs:
       - name: Checkout documentation
         uses: actions/checkout@v7
 
-      - name: Download plcli
-        uses: dawidd6/action-download-artifact@v21
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          workflow: build.yml
-          workflow_conclusion: success
-          branch: master
-          event: push
-          name: plcli Linux
-          repo: WerWolv/PatternLanguage
-          check_artifacts: false
-          search_artifacts: false
-          if_no_artifact_found: fail
+      - name: Download ImHex AppImage
+        id: imhex
+        env:
+          GH_TOKEN: ${{ secrets.IMHEX_ARTIFACT_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p ./imhex-download
+
+          run_id="$(gh run list \
+            --repo WerWolv/ImHex \
+            --workflow build.yml \
+            --branch master \
+            --event push \
+            --status success \
+            --limit 1 \
+            --json databaseId \
+            --jq '.[0].databaseId')" || run_id=""
+
+          if [[ -z "${run_id}" ]] || ! gh run download "${run_id}" \
+            --repo WerWolv/ImHex \
+            --name "Linux AppImage x86_64" \
+            --dir ./imhex-download; then
+            echo "Latest build artifact unavailable; downloading the nightly AppImage."
+            nightly_url="$(curl --fail --silent --show-error \
+              https://api.github.com/repos/WerWolv/ImHex/releases/tags/nightly \
+              | jq -r '.assets[] | select(.name | endswith("-x86_64.AppImage")) | .browser_download_url')"
+            if [[ -z "${nightly_url}" ]]; then
+              echo "The nightly release does not contain an x86_64 AppImage." >&2
+              exit 1
+            fi
+            curl --fail --location \
+              --output ./imhex-download/nightly-x86_64.AppImage \
+              "${nightly_url}"
+          fi
+
+          appimage="$(find ./imhex-download -type f -name '*-x86_64.AppImage' -print -quit)"
+          if [[ -z "${appimage}" ]]; then
+            echo "No x86_64 ImHex AppImage was downloaded." >&2
+            exit 1
+          fi
+
+          chmod +x "${appimage}"
+          appimage="$(realpath "${appimage}")"
+          echo "path=${appimage}" >> "${GITHUB_OUTPUT}"
+
+      - name: Install FUSE
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes libfuse2t64
 
       - name: Generate documentation
         run: |
           git clone --depth 1 https://github.com/WerWolv/ImHex-Patterns
-          chmod +x ./bin/plcli
           python3 scripts/generate_pattern_language_docs.py \
-            --plcli ./bin/plcli \
+            --imhex "${{ steps.imhex.outputs.path }}" \
             --patterns ./ImHex-Patterns
 
       - name: Verify generated documentation

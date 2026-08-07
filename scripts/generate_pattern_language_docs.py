@@ -17,13 +17,13 @@ def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate Pattern Language library documentation")
     source = parser.add_mutually_exclusive_group(required=True)
     source.add_argument("--generated-root", type=Path, help="Convert an existing generated docs tree")
-    source.add_argument("--plcli", type=Path, help="Path to the plcli executable")
+    source.add_argument("--imhex", type=Path, help="Path to an ImHex AppImage")
     parser.add_argument("--patterns", type=Path, help="Path to an ImHex-Patterns checkout")
     parser.add_argument("--destination", type=Path, default=DEFAULT_DESTINATION)
     return parser.parse_args()
 
 
-def generate_markdown(plcli: Path, patterns: Path, destination: Path) -> None:
+def generate_markdown(imhex: Path, patterns: Path, destination: Path) -> None:
     includes = patterns.resolve() / "includes"
     sources = sorted(
         path
@@ -41,7 +41,8 @@ def generate_markdown(plcli: Path, patterns: Path, destination: Path) -> None:
         output.parent.mkdir(parents=True, exist_ok=True)
         subprocess.run(
             [
-                str(plcli.resolve()),
+                str(imhex.resolve()),
+                "--pl",
                 "docs",
                 "--includes",
                 str(includes),
@@ -151,10 +152,10 @@ def main() -> None:
         count = replace_generated_pages(arguments.generated_root.resolve(), destination)
     else:
         if not arguments.patterns:
-            raise SystemExit("--patterns is required when using --plcli")
+            raise SystemExit("--patterns is required when using --imhex")
         with tempfile.TemporaryDirectory(prefix="pattern-language-docs-") as temporary:
             generated_root = Path(temporary)
-            generate_markdown(arguments.plcli, arguments.patterns, generated_root)
+            generate_markdown(arguments.imhex, arguments.patterns, generated_root)
             count = replace_generated_pages(generated_root, destination)
 
     print(f"Generated {count} Pattern Language library pages in {destination}")

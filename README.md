@@ -31,12 +31,14 @@ The importer replaces `content/docs` and `public/assets`, then validates all gen
 
 ## Pattern Language Libraries
 
-The `Update Pattern Language Documentation` workflow downloads the latest `plcli` artifact, generates API documentation from the libraries in `WerWolv/ImHex-Patterns`, and updates `content/docs/pattern-language/libraries`.
+The `Update Pattern Language Documentation` workflow downloads the latest ImHex AppImage build, falling back to the nightly release, and uses its `--pl` command to generate API documentation from the libraries in `WerWolv/ImHex-Patterns`. Generated pages are written to `content/docs/pattern-language/libraries`.
+
+Set the optional `IMHEX_ARTIFACT_TOKEN` repository secret to a token with Actions read access to `WerWolv/ImHex`. Without it, the workflow falls back to the public nightly AppImage.
 
 The conversion step can also be run locally with:
 
 ```bash
 python3 scripts/generate_pattern_language_docs.py \
-  --plcli /path/to/plcli \
+  --imhex /path/to/ImHex.AppImage \
   --patterns /path/to/ImHex-Patterns
 ```
