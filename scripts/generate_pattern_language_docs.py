@@ -49,10 +49,12 @@ def generate_markdown(imhex: Path, patterns: Path, destination: Path) -> None:
                 "--define",
                 "__IMHEX__",
                 "--noimpls",
+                "--pattern",
                 str(source),
+                "--output",
                 str(output),
             ],
-            check=True,
+            check=False,
         )
 
 
