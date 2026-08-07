@@ -28,6 +28,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.IMHEX_ARTIFACT_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
+          set +x
           mkdir -p ./imhex-download
 
           run_id="$(gh run list \
