@@ -10,6 +10,114 @@ Types used to decode various different time formats
 
 ## Types
 
+### `std::core::BitfieldOrder`
+
+
+```rust
+enum BitfieldOrder :  {
+    LeastToMostSignificant,
+    LeftToRight,
+    MostToLeastSignificant,
+    RightToLeft
+};
+```
+### `std::mem::AlignTo`
+
+Aligns the cursor to the given alignment
+- `<alignment>`: The alignment to align to
+
+```rust
+struct AlignTo<auto Alignment> { ... } [[hidden, sealed]];
+```
+### `std::mem::Bytes`
+
+A type representing a sequence of bytes without any specific meaning
+- `<Size>`: The size of the sequence
+
+```rust
+struct Bytes<auto Size> { ... } [[sealed, format]];
+```
+### `std::mem::Endian`
+
+The endianness of a value
+
+```rust
+enum Endian :  {
+    Big,
+    Little,
+    Native
+};
+```
+### `std::mem::MagicSearch`
+
+Searches for a sequence of bytes and places the given type at that address
+- `<Magic>`: The magic sequence to search for
+- `<T>`: The type to place at the address
+
+```rust
+struct MagicSearch<auto Magic, T> { ... };
+```
+### `std::mem::Reinterpreter`
+
+Reinterprets a value as a different one
+- `<From>`: The type to reinterpret from
+- `<To>`: The type to reinterpret to
+
+```rust
+union Reinterpreter<From, To> { ... };
+```
+### `std::mem::Section`
+
+A Handle for a custom Section
+
+```rust
+using Section = ;
+```
+### `std::time::DOSDate`
+
+A type to represent a DOS date.
+
+```rust
+bitfield DOSDate { ... } [[sealed, bitfield_order]];
+```
+### `std::time::DOSTime`
+
+A type to represent a DOS time.
+
+```rust
+bitfield DOSTime { ... } [[sealed, bitfield_order]];
+```
+### `std::time::EpochTime`
+
+A type to represent a time in seconds since the epoch.
+
+```rust
+using EpochTime = ;
+```
+### `std::time::Time`
+
+A structured representation of a time and date.
+
+```rust
+struct Time { ... } [[sealed]];
+```
+### `std::time::TimeConverter`
+
+A helper type to convert between Time and u128.
+
+```rust
+union TimeConverter { ... };
+```
+### `std::time::TimeZone`
+
+A type to represent a time zone.
+
+```rust
+enum TimeZone :  {
+    Local,
+    UTC
+};
+```
 ### `type::DOSDate`
 
 A DOS Date value

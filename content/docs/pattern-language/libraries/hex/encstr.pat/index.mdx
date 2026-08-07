@@ -6,3 +6,16 @@ toc:
   visible: true
 ---
 Types to work with custom encoded strings using Thiny encoding definitions
+
+
+## Types
+
+### `hex::type::EncodedString`
+
+A string that was encoded using a custom encoding
+- `<Data>`: Pattern whose bytes are used in the decoding process
+- `<EncodingDefinition>`: A string containing a Thingy encoding definition as used by ImHex's custom encoding feature
+
+```rust
+struct EncodedString<auto Data, auto EncodingDefinition> { ... } [[sealed, format]];
+```
