@@ -84,17 +84,13 @@ def normalize_relative_path(source: Path, root: Path) -> Path:
     relative = source.relative_to(root)
     parts = list(relative.parts)
     parts[-1] = parts[-1].removesuffix(".md")
-
-    if parts[:2] == ["hex", "type"] or parts[:2] == ["type", "types"]:
-        del parts[1]
-
     return Path(*parts)
 
 
 def convert_markdown(markdown: str, route: Path) -> str:
     body = extract_frontmatter(markdown)
     title_match = re.search(r"^#\s+(.+)$", body, flags=re.MULTILINE)
-    title = title_match.group(1).strip() if title_match else route.name.removesuffix(".pat")
+    title = title_match.group(1).strip() if title_match else re.sub(r"\.(?:hex)?pat$", "", route.name)
     body = re.sub(r"^\s*#\s+.+\n+", "", body, count=1)
     body = escape_mdx_text(body).strip()
 

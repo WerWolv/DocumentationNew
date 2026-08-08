@@ -19,15 +19,12 @@ SPACES = (
 )
 
 
-def route_for(space_source: str, space_route: str, relative_path: str) -> str:
+def route_for(_space_source: str, space_route: str, relative_path: str) -> str:
     if relative_path == "README.md":
         return space_route
 
     route = re.sub(r"/README\.md$", "", relative_path)
     route = re.sub(r"\.md$", "", route)
-    if space_source == "pattern_language":
-        route = re.sub(r"^libraries/hex/type/", "libraries/hex/", route)
-        route = re.sub(r"^libraries/type/types/", "libraries/type/", route)
 
     return f"{space_route}/{route}"
 

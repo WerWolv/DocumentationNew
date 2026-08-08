@@ -20,7 +20,7 @@ import ThemeToggler from "@/components/theme/toggler";
 import { Separator } from "@/components/ui/separator";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { docsConfig } from "@/config/docs.config";
+import { docsConfig, type DocsNavItem } from "@/config/docs.config";
 
 export default function MobileNav() {
   const [open, setOpen] = useState(false);
@@ -60,10 +60,9 @@ export default function MobileNav() {
               {section.title}
             </p>
             {section.items.map((item) => (
-              <NavItemComponent
-                key={item.href}
-                title={item.title}
-                href={item.href ?? ""}
+              <MobileDocsItem
+                key={item.href ?? item.segment}
+                item={item}
                 setOpen={setOpen}
               />
             ))}
@@ -83,14 +82,52 @@ export default function MobileNav() {
   );
 }
 
+const MobileDocsItem = ({
+  item,
+  setOpen,
+  depth = 0,
+}: {
+  item: DocsNavItem;
+  setOpen: (open: boolean) => void;
+  depth?: number;
+}) => (
+  <div>
+    {item.href ? (
+      <NavItemComponent
+        title={item.title}
+        href={item.href}
+        setOpen={setOpen}
+        depth={depth}
+      />
+    ) : (
+      <p
+        className="py-1 text-sm font-semibold text-muted-foreground"
+        style={{ paddingLeft: `${depth * 0.75}rem` }}
+      >
+        {item.title}
+      </p>
+    )}
+    {item.items?.map((child) => (
+      <MobileDocsItem
+        key={child.href ?? `${item.segment}/${child.segment}`}
+        item={child}
+        setOpen={setOpen}
+        depth={depth + 1}
+      />
+    ))}
+  </div>
+);
+
 const NavItemComponent = ({
   title,
   href,
   setOpen,
+  depth = 0,
 }: {
   title: string;
   href: string;
   setOpen: (open: boolean) => void;
+  depth?: number;
 }) => {
   const pathname = usePathname();
   const active =
@@ -104,6 +141,7 @@ const NavItemComponent = ({
         "transition-all duration-200 ease-out"
       )}
       onClick={() => setOpen(false)}
+      style={{ paddingLeft: `${depth * 0.75}rem` }}
     >
       <span
         className={cn(
