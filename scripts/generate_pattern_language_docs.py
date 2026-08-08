@@ -54,7 +54,7 @@ def generate_markdown(imhex: Path, patterns: Path, destination: Path) -> None:
                 "--output",
                 str(output),
             ],
-            check=False,
+            check=True,
         )
 
 
